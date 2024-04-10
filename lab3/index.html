@@ -4,14 +4,61 @@
     <title></title>
 </head>
 <body>
-    <button onclick="getimg()">Get IMG</button>
+    <button onclick="getimgID()">Get IMG</button>
         <div id="gallery" class="gallery"></div>
 </body>
 <script type="text/javascript">
-    var img_Url ='https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=ca370d51a054836007519a00ff4ce59e&photo_id=53608779187&format=json&nojsoncallback=1';
-    
+    //var img_Url ='https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=ca370d51a054836007519a00ff4ce59e&photo_id=53608779187&format=json&nojsoncallback=1';
+    var img_listUrl='https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=ca370d51a054836007519a00ff4ce59e&per_page=10&format=json&nojsoncallback=1';
     //var dataUrl = 'https://api.unsplash.com/photos?client_id=812193ef71ca946e361ed541979a0cfd91e9419a19235fd05f51ea14233f020a&per_page=30';
-    function getimg(){
+    
+    function getimgID(){
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', img_listUrl, true);
+        xhr.send();
+        xhr.onload = function(){
+            if(xhr.status == 200){
+                var listID = JSON.parse(this.responseText);
+                //console.log(listID);
+                getlistID(listID);
+                //console.log("hello world");
+            }
+        }
+    }
+    function getlistID(listID){
+                    
+                    listID.photos.photo.forEach(function(item){
+                        var imgID = item.id;
+                        
+                        console.log(imgID);
+                        console.log("hello world???");
+                        var img_Url ='https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=ca370d51a054836007519a00ff4ce59e&photo_id='+imgID+'&format=json&nojsoncallback=1';
+                        addimgidurl(img_Url);
+                        //getimg(img_Url);
+                    
+                    });
+                }
+    function addimgidurl(img_Url){
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', img_Url, true);
+        xhr.send();
+        xhr.onload = function(){
+            if(xhr.status == 200){
+                var data = JSON.parse(this.responseText);
+                var dataset = data.sizes.size[3].source;
+                    
+                var gal = document.getElementById("gallery");
+                var img = document.createElement("img");
+                img.setAttribute("src", dataset);
+                gal.appendChild(img);
+                
+            }
+        }
+    }
+    
+
+
+    function getimg(img_Url){
         var xhr = new XMLHttpRequest();
         xhr.open('GET', img_Url, true);
         xhr.send();
@@ -19,8 +66,9 @@
             if(xhr.status == 200){
                 var data = JSON.parse(this.responseText);
                 console.log(data);
-                add_new_img(data);
-                console.log("hello world");
+                //add_new_img(data);
+                //addimgidurl(data);
+                //console.log("hello world");
             }
         }
 
@@ -30,7 +78,6 @@
         //console.log(dataset);
         
         dataset.sizes.size.forEach(function(item){
-            console.log(item);
             var img = document.createElement("img");
             img.setAttribute("src", item.source);
             
