@@ -45,7 +45,7 @@
         xhr.onload = function(){
             if(xhr.status == 200){
                 var data = JSON.parse(this.responseText);
-                var dataset = data.sizes.size[3].source;
+                var dataset = data.sizes.size[9].source;
                     
                 var gal = document.getElementById("gallery");
                 var img = document.createElement("img");
